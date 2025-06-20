@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ejemplo Pengines</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <h1>Ejemplo Pengines</h1>
+  <p>Ingrese un número:</p>
+  <input type="number" id="input-number">
+  <button onclick="esPar()">Verificar si es par</button>
+  <p id="resultado"></p>
+  <script>
+    function esPar() {
+      var inputNumber = $('#input-number').val();
+
+      var query = "es_par(" + inputNumber + ").";
+
+      $.ajax({
+        url: "http://localhost:8085/pengine/create",
+        type: "POST",
+        data: { ask: query, format: "json" },
+        success: function(result) {
+          if (result.status == "success") {
+            var respuesta = result.data[0].Solution;
+
+            if (respuesta == "true") {
+              $('#resultado').text(inputNumber + " es par.");
+            } else {
+              $('#resultado').text(inputNumber + " no es par.");
+            }
+          } else {
+            console.log(result);
+            console.log(result.data);
+            alert("Error: " + result.data);
+          }
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          console.log(xhr);
+          alert("Error: " + errorThrown);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
